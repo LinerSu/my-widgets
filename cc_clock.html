@@ -1,15 +1,29 @@
 <!doctype html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=160, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  :root { --w:160px; --h:35px; }
-  html,body { margin:0; padding:0; overflow:hidden; background:transparent; }
-  .box { width:var(--w); height:var(--h); }
-  iframe { display:block; width:var(--w); height:var(--h); border:0; }
+  html,body { height:100%; margin:0; background:transparent; }
+  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; }
+  /* Base clock size from Timeanddate; do not change */
+  iframe#clock { width:160px; height:57px; border:0; transform-origin: top left; }
 </style>
-<div class="box">
-  <iframe
-    src="https://free.timeanddate.com/clock/ia1bwton/n225/fn6/fs16/fc0ff/tc000/ftb/bas0/bat1/bacfff/pa0/tt0/tw1/tm1/td2/th1/ts1/ta1/tb4"
-    loading="lazy">
+<div class="stage">
+  <iframe id="clock"
+    src="https://free.timeanddate.com/clock/ia1bwton/n225/fn6/fs16/fc0ff/tc000/ftb/bas0/pa0/tt0/tw1/tm1/td2/th1/ts1/ta1/tb4"
+    loading="lazy" referrerpolicy="no-referrer">
   </iframe>
 </div>
+<script>
+  const BASE_W = 160, BASE_H = 57;          // the clock’s intrinsic size
+  const MODE = 'contain';                    // 'contain' (no crop) or 'cover' (fill, may crop)
+  const clock = document.getElementById('clock');
+
+  function fit() {
+    const W = window.innerWidth, H = window.innerHeight;
+    const sx = W / BASE_W, sy = H / BASE_H;
+    const s  = (MODE === 'cover') ? Math.max(sx, sy) : Math.min(sx, sy);
+    clock.style.transform = `scale(${s})`;
+  }
+  addEventListener('resize', fit, {passive:true});
+  fit();
+</script>
